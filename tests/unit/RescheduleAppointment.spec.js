@@ -1,14 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import RescheduleAppointment from '@/views/rescheduleAppointment/RescheduleAppointment.vue';
-import fetchNextMonday from '@/utils/services.js';
+import { fetchNextMonday, bookSlot } from '@/utils/services.js';
 import { getNextMonday, formatDateString, transformData, formatDateTime } from '@/utils/functions.js';
-import { bookSlot as bookSlotService } from '@/utils/services.js';
 
-vi.mock('@/utils/services.js', () => ({
-  fetchNextMonday: vi.fn(),
-  bookSlot: vi.fn()
-}));
+vi.mock('@/utils/services.js');
 
 describe('RescheduleAppointment.vue', () => {
   let wrapper;
@@ -37,16 +33,16 @@ describe('RescheduleAppointment.vue', () => {
   });
 
   it('books a slot correctly', async () => {
-    bookSlotService.mockResolvedValueOnce({ ok: true });
+    bookSlot.mockResolvedValueOnce({ ok: true });
     await wrapper.vm.bookSlot('2021-08-02', '09:00');
-    expect(bookSlotService).toHaveBeenCalled();
+    expect(bookSlot).toHaveBeenCalled();
     expect(wrapper.vm.appointment.date).toBe('2021-08-02');
     expect(wrapper.vm.appointment.time).toBe('09:00');
   });
 
   it('handles booking slot errors', async () => {
-    bookSlotService.mockRejectedValueOnce(new Error('Error booking appointment'));
+    bookSlot.mockRejectedValueOnce(new Error('Error booking appointment'));
     await wrapper.vm.bookSlot('2021-08-02', '09:00');
-    expect(bookSlotService).toHaveBeenCalled();
+    expect(bookSlot).toHaveBeenCalled();
   });
 });

@@ -1,11 +1,15 @@
 <template>
   <div class="appointment-container">
-    <img src="@/assets/icons/calendar.png" alt="Calendar Icon" class="calendar-icon"/>
-    <p>On {{ dateValue }} at {{ timeValue }}</p>
+    <img :src="loading ? loadingGif : calendarIcon" alt="Calendar Icon" class="calendar-icon"/>
+    <p>On {{ formattedDate }} at {{ formattedTime }}</p>
   </div>
 </template>
 
 <script>
+import { formatDate, formatTime } from '@/utils/functions.js';
+import calendarIcon from '@/assets/icons/calendar.png';
+import loadingGif from '@/assets/icons/loading.gif';
+
 export default {
   name: 'AppointmentDate',
   props: {
@@ -16,7 +20,25 @@ export default {
     timeValue: {
       type: String,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
+  },
+  computed: {
+    formattedDate() {
+      return formatDate(this.dateValue);
+    },
+    formattedTime() {
+      return formatTime(this.timeValue);
+    }
+  },
+  data() {
+    return {
+      calendarIcon,
+      loadingGif
+    };
   }
 }
 </script>

@@ -40,13 +40,13 @@ function transformData(data, dateValue) {
   for (let i = 0; i < 7; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
-    const formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long' });
+    const formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
     result[formattedDate] = [];
   }
 
   data.forEach(item => {
     const date = new Date(item.Start);
-    const formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long' });
+    const formattedDate = date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
     const time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 
     if (result[formattedDate]) {
@@ -103,6 +103,37 @@ export function formatDateTime(date, time) {
   const year = new Date().getFullYear();
   const formattedDate = `${year}-${monthMap[month]}-${day.padStart(2, '0')}`;
   return `${formattedDate} ${time}`;
+}
+
+export function formatDate(dateValue) {
+  const date = new Date(dateValue);
+  const year = date.getFullYear();
+  return date.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+export function formatTime(timeValue) {
+  const [hour, minute] = timeValue.split(':');
+  const date = new Date();
+  date.setHours(hour, minute);
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+export function formatShortDate(dateValue) {
+  const date = new Date(dateValue);
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+}
+
+export function formatDayName(date) {
+  const fullDate = new Date(date);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  if (fullDate.toDateString() === today.toDateString()) {
+    return 'Today';
+  } else if (fullDate.toDateString() === tomorrow.toDateString()) {
+    return 'Tomorrow';
+  }
+  return fullDate.toLocaleDateString('en-US', { weekday: 'short' });
 }
 
 export { getNextMonday, formatDateString, transformData, parseDateString, convertDateStringToDate, parseCompactDateString };

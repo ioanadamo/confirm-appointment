@@ -1,9 +1,9 @@
 <template>
-  <div class="reschedule-container">
+  <div :class="['reschedule-container', { 'full-height': isFullHeight }]">
     <div class="view-container">
       <Header></Header>
-      <AppointmentDate :dateValue="appointment.date" :timeValue="appointment.time"></AppointmentDate>
-      <RescheduleTable :appointments="appointments" @update-appointments="updateAppointments" @book-slot="bookSlot" ref="rescheduleTable"></RescheduleTable>
+      <AppointmentDate :dateValue="appointment.date" :timeValue="appointment.time" :loading="loading"></AppointmentDate>
+      <RescheduleTable :appointments="appointments" @update-appointments="updateAppointments" @book-slot="bookSlot" @toggle-height="toggleHeight" ref="rescheduleTable"></RescheduleTable>
     </div>
   </div>
 </template>
@@ -31,13 +31,16 @@ export default {
       },
       appointments: {},
       futureDateBase: new Date(),
+      isFullHeight: false,
+      loading: false
     };
   },
   async created() {
-    this.appointment.date = '2021-08-02';
+    const today = new Date();
+    const year = today.getFullYear();
+    this.appointment.date = `${year}-08-02`;
     this.appointment.time = '09:00';
     
-    const today = new Date();
     this.futureDateBase = getNextMonday(today);
     
     await this.fetchAppointments(this.futureDateBase, today);
@@ -66,6 +69,7 @@ export default {
       }
     },
     async bookSlot(selectedDate, selectedTime) {
+      this.loading = true;
       const startTimestamp = formatDateTime(selectedDate, selectedTime);
       let [endHour, endMinute] = selectedTime.split(':').map(Number);
       endMinute += 30;
@@ -96,7 +100,12 @@ export default {
         }
       } catch (error) {
         console.error('Error booking appointment:', error);
+      } finally {
+        this.loading = false;
       }
+    },
+    toggleHeight(isFullHeight) {
+      this.isFullHeight = isFullHeight;
     }
   }
 }
@@ -107,6 +116,10 @@ export default {
     background-color: #f0f0f0;
     padding: 20px;
     height: 100vh; 
+  }
+
+  .reschedule-container.full-height {
+    height: 100%;
   }
 
   .view-container {

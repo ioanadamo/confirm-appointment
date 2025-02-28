@@ -37,7 +37,7 @@ describe('RescheduleTable.vue', () => {
     wrapper.vm.toggleShowMore();
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.showMore).toBe(true);
-    expect(wrapper.vm.visibleRows).toBe(wrapper.vm.maxHourOccurrences);
+    expect(wrapper.vm.visibleRows).toBe(wrapper.vm.allTimeSlots.length);
   });
 
   it('resets visible rows correctly', async () => {
@@ -54,7 +54,7 @@ describe('RescheduleTable.vue', () => {
     await wrapper.vm.$nextTick();
     wrapper.vm.bookSelectedSlot();
     expect(wrapper.emitted('book-slot')).toBeTruthy();
-    expect(wrapper.emitted('book-slot')[0]).toEqual(['2023-10-01', '09:00']);
+    expect(wrapper.emitted('book-slot')[0]).toEqual(['October 1, 2023', '09:00']);
   });
 
   it('updates max hour occurrences correctly', async () => {

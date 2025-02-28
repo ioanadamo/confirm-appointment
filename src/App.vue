@@ -3,11 +3,6 @@ import RescheduleAppointment from './views/rescheduleAppointment/RescheduleAppoi
 </script>
 
 <template>
-  <header>
-    <RescheduleAppointment />
-  </header>
-
-  <main>
-  </main>
+  <RescheduleAppointment />
 </template>
 
